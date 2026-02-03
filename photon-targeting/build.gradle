@@ -178,6 +178,15 @@ def nativeTasks = wpilibTools.createExtractionTasks {
 
 nativeTasks.addToSourceSetResources(sourceSets.test)
 
+// Expose our native outputs (including photontargetingJNI) to downstream wpilibNatives consumers.
+def nativeZipTaskName = "${zipBaseName}-${jniPlatform}"
+def nativeZipFile = layout.buildDirectory.file("outputs/${nativeZipTaskName}.zip")
+artifacts {
+    wpilibNatives(nativeZipFile) {
+        builtBy(tasks.matching { it.name == nativeZipTaskName })
+    }
+}
+
 nativeConfig.dependencies.add wpilibTools.deps.wpilib("wpiutil")
 nativeConfig.dependencies.add wpilibTools.deps.wpilib("wpimath")
 nativeConfig.dependencies.add wpilibTools.deps.wpilib("wpinet")
